@@ -115,21 +115,15 @@ source("utility_functions/makeTreeStructure.R")
        questListData[[3]]  <- instrumentBPFSC24En(dfFullAss())
        questListData = questListData %>% compact() # Remove NULL Lists
 
-        if (is.null(questListData) | length(questListData) == 0) {
-          showModal(patientSelectModal(session$userData))
-          output$patient_error_msg =  renderText("No compatible reporting tool")} else {
+       if (is.null(questListData) | length(questListData) == 0){
+          showNotification("There is no compatible reporting tool for the patient's data")} else {
           questListData
           }
 
          }
         })
 
-     #else if () {
-       #   showModal(patientSelectModal(session$userData))
-       #   output$patient_error_msg =  renderText("There is no compatible reporting routine for the instruments")
-       # } else
-
-
+  
 
      treeStructure =  reactive({
        makeTreeStructure(questListData())
