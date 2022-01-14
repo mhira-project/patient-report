@@ -10,21 +10,26 @@ The [MHIRA docker installation](https://github.com/mhira-project/mhira-docker) c
 When installing MHIRA, settings can be modified in the .env file (see [MHIRA installation reporitory](https://github.com/mhira-project/mhira-docker)).
 The .env file contains the setting for the data save path. 
 
-After installation of MHIRA, you will find a folder called 'shiny' under the data save path. Under the initial settings, this will be: '.mhira-docker/data/shiny'. 
+After installation of MHIRA, you will find a folder called 'shiny' under the data save path. Under the default settings, this will be: '.mhira-docker/data/shiny' in your home directory. 
 For the app in the current repository to work, you need to copy it to the 'apps' folder inside this folder.
 
 It should then look like this: 
 
 '.mhira-docker/data/shiny/apps/patient-report'
 
+A good way to achive this is to navigate to '.mhira-docker/data/shiny/apps/' and then to clone the current repository
+
+For example 
+'git clone https://github.com/mhira-project/patient-report.git'
+
 Now the shiny app should be available under the url 'localhost/shiny' which you can enter to your local browser. 
 
 The app will not yet work, because it expects addtional parameters in the url. 
 
-You can use the app pressing the reporting button in the MHIRA application. This will redirect you to the shiny app you just installed. 
+You can start the shiny app from within MHIRA pressing the connected reporting button. This will redirect you to the shiny app you just installed. 
 
 
-# Troubleshooting of the shiny app in the shiny container
+## Troubleshooting of the shiny app in the shiny container
 
 If you want to see output from the shiny app you can attach the container to your terminal using 
 
