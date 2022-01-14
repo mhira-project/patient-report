@@ -24,4 +24,8 @@ The app will not yet work, because it expects addtional parameters in the url.
 You can use the app pressing the reporting button in the MHIRA application. This will redirect you to the shiny app you just installed. 
 
 
+# Troubleshooting of the shiny app in the shiny container
 
+If you want to see output from the shiny app you can attach the container to your terminal using 
+
+docker attach to attach the shiny docker container e.g. 'docker attach mhira-docker_shiny1'.
