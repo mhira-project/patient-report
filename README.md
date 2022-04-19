@@ -33,4 +33,5 @@ You can start the shiny app from within MHIRA pressing the connected reporting b
 
 If you want to see output from the shiny app you can attach the container to your terminal using 
 
-docker attach to attach the shiny docker container e.g. 'docker attach mhira-docker_shiny1'.
+Intructions can be found [here](https://docs.docker.com/engine/reference/commandline/logs/)
+

@@ -2,12 +2,12 @@
 #tree <- lapply(structure(list(a=list(a1=1,a2=2) , b="b"), stopened = TRUE) , function(x) structure(x, stopened = TRUE))
 
 
-makeTreeStructure <- function(questListData){
+makeTreeStructure <- function(scales){
   
   f = function(x){
-    val =  x[["values"]]
+   
     #val$assessmentName = factor(gsub("[[:space:]]", "_", val$assessmentName))
-    val = val %>% select(assessmentName, variable)
+    val = scales %>% select(assessmentName, variable)
     # nestedlist <- lapply(split(val, val$assessmentName, drop = TRUE),
     #                      function(x) split(x, x[['variable']], drop = TRUE))
     
@@ -20,9 +20,13 @@ makeTreeStructure <- function(questListData){
 
   }
   
+  treeStructure = list()
   
-  treeStructure =  map(questListData, f)
-  names(treeStructure) =  questListData %>% map(pluck, "values", "questionnaireName", 1) %>% unlist 
+  for (q in unique(scales$questionnaireFullName)){
+  subTreeStructure =  f(scales %>% select(questionnaireFullName == q))
+  treeStructure[[q]] =  subTreeStructure
+  
+  }
   
   return(treeStructure)
 }

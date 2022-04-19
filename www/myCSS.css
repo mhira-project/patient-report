@@ -1,14 +1,23 @@
-.box {
-  background-color: white;
-}
 
-.box {border-style: ridge;
-  
-}
 
-.box {width: 700px;
+.select {margin: 0px 0px 0px 10px;
+     /*border-style: ridge;
+       height: 90vh;
+       width: 75vw;
+       overflow-x: scroll;*/
+      }
+
+.box2 {margin: 0px 0px 0px 10px;
+     /*border-style: ridge;
+       height: 90vh;
+       width: 75vw;
+       overflow-x: scroll;*/
+      }
+
+#pannelId {margin: 0px 0px 0px 10px /* top right bottom left */
   
-}
+          }
+
 
 .warning{ padding: 20px;
   background-color: #f44336; /* Red */
