@@ -14,7 +14,7 @@ simplifyPatRep = function(response){
     add_column(. , questionnaireId = seq_len(nrow(.))) %>%
     unnest(cols = "questions") %>%
     unnest(cols = "answer") %>%
-    left_join(data$generatePatientReport$assessments, by = "assessmentId") 
+    left_join(unnest(data$generatePatientReport$assessments, cols = "assessmentType"), by = "assessmentId") 
   
   colnames(df)[colnames(df) == "name.x"] <- "questionnaireShortName"
   colnames(df)[colnames(df) == "name.y"] <- "assessmentName"
