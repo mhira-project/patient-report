@@ -36,7 +36,8 @@ GQL = 'query {
     }
     assessments{
       assessmentId
-      name
+      assessmentType{
+        name}
       status
     }
     questionnaireScripts{
