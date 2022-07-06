@@ -1,0 +1,18 @@
+﻿Key;en;de;es;sq;sw
+tabSelection;Select a questionnaire from the tabs;Wählen Sie einen Fragebogen ;Select a questionnaire from the tabs;Select a questionnaire from the tabs;Select a questionnaire from the tabs
+selectAssessment;Select assessment:;Untersuchungstermine wählen:;Select assessment:;Select assessment:;Select assessment:
+timeoutAt;Session timed out at: ;Session beendet um: ;Session timed out at: ;Session timed out at: ;Session timed out at: 
+timeoutReason;The session was terminated due to inactivity: ;Die Session wurde wegen inaktivität beendet:;The session was terminated due to inactivity: ;The session was terminated due to inactivity: ;The session was terminated due to inactivity: 
+noPatient;No patient was found.;Es wurde kein Patient gefunden.;No patient was found.;No patient was found.;No patient was found.
+noAssessment;No assessment found.;Es wurde kein Untersuchung gefunden.;No assessment found.;No assessment found.;No assessment found.
+noQuestionnaire;No completed questionnaire found.;Es wurde kein ausgefüllter Fragebogen gefunden.;No completed questionnaire found.;No completed questionnaire found.;No completed questionnaire found.
+figure;Figure;Graphische Darstellung;Figure;Figure;Figure
+evaluation;Evaluation;Evaluation;Evaluation;Evaluation;Evaluation
+data;Raw data;Rohdaten;Raw data;Raw data;Raw data
+assessment;assessment;Untersuchungstermin;assessment;assessment;assessment
+interpretation;interpretation;Interpretation;interpretation;interpretation;interpretation
+recommendation;recommendation;Empfehlung;recommendation;recommendation;recommendation
+warning;warning;Warnung;warning;warning;warning
+time;time;Zeitpunkt;time;time;time
+scale;scale;Skala;scale;scale;scale
+score;score;Wert;score;score;score
