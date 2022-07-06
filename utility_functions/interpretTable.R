@@ -1,24 +1,20 @@
-interpretTable = function(scales, showScale = F){
+interpretTable = function(scales, transMatrix, showScale = F, lang){
   
 
 df = scales %>%  
-  arrange(desc(assessmentDateTime), questionnaireShortName, text_order) %>%
   select(
+    time = assessmentDateTime,
     assessment = assessmentName,
     scales = variable,
     interpretation = interpretation,
     recommendation = recommendation,
-    warning = warning) 
+    warning = warning) %>%
+  arrange(desc(time), assessment, scales)
 
-df$assessment = paste(scales$assessmentName,
-                      scales$assessmentDateTime,
-                      sep = " ") 
 
 
 if (showScale == F){
 
-
-  
 df = df %>% 
         group_by(assessment) %>%
         mutate(interpretation = paste(interpretation %>% na.omit(), collapse = " "),
@@ -26,12 +22,26 @@ df = df %>%
                warning = any(warning)) %>%
         select(-scales) %>%
         unique() 
-        
 
-    } else {df$assessment[duplicated(df$assessment)] <- NA}
+} else {
+      df$assessment[duplicated(df$assessment)] <- NA
+}
 
-return(df) 
+df$time = as.character(df$time)
+
+
+colnames(df) <- transMatrix[c("time","assessment","interpretation","recommendation", "warning"), lang]
+
+
+dfRendered = df %>% 
+              datatable(options = list(order = list(list(1, 'desc')))) %>% 
+              formatStyle(valueColumns = transMatrix["warning", lang], # https://rstudio.github.io/DT/010-style.html
+                          columns = c(transMatrix["warning", lang]), 
+                          backgroundColor = styleEqual(c(TRUE), c('red')),
+                          color = styleEqual(c(TRUE), c('white'))
+                    ) 
+
+return(dfRendered) 
   
 }
 
-# https://rstudio.github.io/DT/010-style.html
