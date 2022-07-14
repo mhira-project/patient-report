@@ -7,6 +7,7 @@ library(data.table)
 library(httr)
 library(jsonlite)
 library(DT)
+library(crosstalk)
 #library(tidyjson)
 
 
@@ -27,6 +28,7 @@ source("utility_functions/applyCutOffs.R")
 source("utility_functions/severityPlot.R")
 source("utility_functions/inactivity.R")
 source("utility_functions/interpretTable.R")
+source("utility_functions/checkGraphqlResponse.R")
 
 
 inactivity = inactivity(timeoutSeconds)
@@ -81,7 +83,7 @@ defaultLang = "en"
       fluidRow(
 
             width = 12,
-           # h3(transMatrix["promtTabSelection", input$currentLang], class = "select"),
+           # h3(transMatrix["promtTabSelection", lang()], class = "select"),
           
             uiOutput("tab")
             
@@ -112,10 +114,10 @@ defaultLang = "en"
   # OBSERVE INACTIVITY AND CLOSE APP ------------------------------------------  
     
     observeEvent(input$timeOut, { 
-      print(paste0(transMatrix["timeoutAt", input$currentLang], " ", Sys.time()))
+      print(paste0(transMatrix["timeoutAt", lang()], " ", Sys.time()))
       showModal(modalDialog(
         title = "Timeout",
-        paste(transMatrix["timeoutReason", input$currentLang],
+        paste(transMatrix["timeoutReason", lang()],
               input$timeOut,
         ),
         footer = NULL
@@ -126,23 +128,37 @@ defaultLang = "en"
  
     # GET patientID FROM THE URL ------------------------------------------------
     
-    patientId = reactive({
+    patientId =  reactiveVal()
+    
+    observe({
+      print("getting patient id from url")
       query <- parseQueryString(session$clientData$url_search) 
       
       if (length(query) > 0){
-        return(as.character(query$patient_id)) # 
-        
-      } else {
-        return(NULL)
-      }
+         query$patient_id  %>%
+          as.character() %>%
+          patientId()
+      } 
     }) 
     
     
-   # STORE LOCAL STORAGE EXTRACTED TOKEN TO SHINY SESSION OBJECT  ------------
+   # STORE LOCAL STORAGE EXTRACTED TOKEN TO SHINY SESSION OBJECT
     observe({ 
+      print("writing token to session object")
       session$userData  = fromJSON(input$accessToken)$accessToken
            }) %>%  bindEvent(input$accessToken)
     
+    
+  # CHECK LANGUAGE AND CREATE 'LANG' REACTIVE VALUE
+     
+    lang = reactiveVal(defaultLang)
+    
+    observe({
+      print("set language")
+      if(input$currentLang %in% colnames(transMatrix)){
+      input$currentLang %>% lang()
+      }
+    }) %>% bindEvent(input$currentLang)
 
      
   # GET PATIENT DATA AND PRE-PROCESS: DATA, SCALES, ADD CUTOFF -----------------
@@ -154,38 +170,14 @@ defaultLang = "en"
       
     observe({
       req(!is_empty(patientId()))
+      req(lang())
+      req(!is_empty(session$userData))
+      print("get patient report via graphql")
       
       response = getPatientReport(token = session$userData, patientId = patientId())
      
-  
-      # Terminate session if response doesn't contain data     
-      if(is_empty(response$data)){
-        showNotification(
-          response$errors$message,
-          type = "error",
-          duration = 20)
-        session$close()}
-      
-      if(is_empty(response$data$generatePatientReport$patient)){
-        showNotification(
-          transMatrix["noPatient", input$currentLang],
-          type = "error",
-          duration = 20)
-        session$close()}
-      
-      if(is_empty(response$data$generatePatientReport$assessments)){
-        showNotification(
-          transMatrix["noAssessment", input$currentLang],
-          type = "error",
-          duration = 20)
-        session$close()}
-      
-      if(is_empty(response$data$generatePatientReport$answeredQuestionnaires)){
-        showNotification(
-          transMatrix["noQuestionnaire", input$currentLang],
-          type = "error",
-          duration = 20)
-        session$close()}
+      checkGraphqlResponse(response) # can terminate app
+     
       
       # Simplify data and remove incomplete questionnaires
       
@@ -195,7 +187,7 @@ defaultLang = "en"
       
       if(is_empty(data)){
         showNotification(
-          transMatrix["noQuestionnaire", input$currentLang],
+          transMatrix["noQuestionnaire", lang()],
           type = "error",
           duration = 20)
         session$close()
@@ -216,7 +208,7 @@ defaultLang = "en"
           scales(scales)
           print("data has been loaded")
   
-            }) %>% bindEvent(input$currentLang) 
+            }) %>%  bindEvent(input$accessToken)
     
   # CREATE CHECKBOX FOR ASSESSMENT SELECTION (SIDEBAR)--------------------------   
     
@@ -233,7 +225,7 @@ defaultLang = "en"
                          choices = choice,
                          selected = choice) %>%
         menuItem( 
-        text = transMatrix["selectAssessment", input$currentLang],
+        text = transMatrix["selectAssessment", lang()],
         icon = icon("clipboard"),
         startExpanded = TRUE)              
       
@@ -287,7 +279,7 @@ defaultLang = "en"
             
     # Create interpretation 
             
-      interpret =   s %>% interpretTable(showScale = F, transMatrix =  transMatrix, lang = input$currentLang)
+      interpret =   s %>% interpretTable(showScale = F, transMatrix =  transMatrix, lang = lang())
      
      
      # create score table 
@@ -299,9 +291,9 @@ defaultLang = "en"
                        scale = variable,
                        score = value)
            
-     colnames(sco) <- transMatrix[c("assessment","time","scale", "score"), input$currentLang] 
+     colnames(sco) <- transMatrix[c("assessment","time","scale", "score"), lang()] 
               
-     scores =   sco %>%  DT::renderDataTable() 
+     scores =   sco %>%  renderDataTable() 
       
             
             
@@ -309,15 +301,15 @@ defaultLang = "en"
            
              output[[my_q]] <-  renderUI(div(class= "box2",
                                        h1(my_q),
-                                       tagList(h3(transMatrix["figure", input$currentLang]),
+                                       tagList(h3(transMatrix["figure", lang()]),
                                        plots,
                                        br(),
                                        hr(),
-                                       h3(transMatrix["evaluation", input$currentLang]),
+                                       h3(transMatrix["evaluation", lang()]),
                                        interpret,
                                        br(),
                                        hr(),
-                                       h3(transMatrix["data", input$currentLang]),
+                                       h3(transMatrix["data", lang()]),
                                        scores))
                                         )
         })
@@ -329,7 +321,7 @@ defaultLang = "en"
   # CREATE TABS ---------------------------------------------------------------
 
     output$tab <- renderUI({
-
+      req(scalesFlt())
       print("rendering tabbox")
 
       panels = lapply(scalesFlt()$questionnaireShortName %>% unique,
@@ -347,3 +339,4 @@ defaultLang = "en"
 ## APP ## --------------------------------------------------------------------
 
 shinyApp(ui = ui, server = server)
+
