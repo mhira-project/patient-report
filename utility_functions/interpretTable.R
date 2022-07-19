@@ -2,14 +2,14 @@ interpretTable = function(scales, transMatrix, showScale = F, lang){
   
 
 df = scales %>%  
+  arrange(desc(assessmentDateTime), assessmentName, text_order) %>%
   select(
     time = assessmentDateTime,
     assessment = assessmentName,
     scales = variable,
     interpretation = interpretation,
     recommendation = recommendation,
-    warning = warning) %>%
-  arrange(desc(time), assessment, scales)
+    warning = warning) 
 
 
 
@@ -44,4 +44,3 @@ dfRendered = df %>%
 return(dfRendered) 
   
 }
-
