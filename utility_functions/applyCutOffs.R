@@ -5,16 +5,7 @@ applyCutOffs = function(scales, questionnaireScripts){
   qS = questionnaireScripts %>%
     filter(name == "cutoffs")
   
-  if(is_empty(qS)){
-    showNotification(
-      "No cutoffs file found.
-      You need to add these evaluation routines to your questionnaires",
-      type = "error",
-      duration = 20)
-    session$close()}
-  
 
- 
  
 cutoffs = data.frame()
 
@@ -34,7 +25,6 @@ result = scales %>%
  return(result)
 
 }
-
 
 
 
