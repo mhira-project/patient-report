@@ -4,7 +4,7 @@
 
 # Load functions
 
-setwd("apps/patient-report/") # make sure you are in the app folder, else source files will not be found
+setwd("shiny_apps/patient-report/") # make sure you are in the app folder, else source files will not be found
 
 source("graphql_functions/getToken.R")
 source("graphql_functions/getPatientReport.R")
@@ -13,6 +13,7 @@ source("utility_functions/simplifyPatRep.R")
 source("utility_functions/calculateScales.R")
 source("utility_functions/applyCutOffs.R")
 source("utility_functions/severityPlot.R")
+source("utility_functions/interpretTable.R")
 
 #Setting
 patientId = 1 # patient_id can be found from the URL when clicking a report on the patient detail view in MHIRA
@@ -26,15 +27,10 @@ data = simplifiedData
 questionnaireScripts = response$data$generatePatientReport$questionnaireScripts
 
 
-scales = calculateScales(
+data = calculateScales(
   simplifiedData = simplifiedData,
   questionnaireScripts = response$data$generatePatientReport$questionnaireScripts)
 
 
-data = applyCutOffs(scales = scales, questionnaireScripts = questionnaireScripts) 
-
-
-
-severityPlot(data, TimeOnXAxis = T)
- 
+scales = applyCutOffs(scales = data, questionnaireScripts = questionnaireScripts) 
 
