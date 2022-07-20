@@ -1,4 +1,4 @@
-checkGraphqlResponse = function(response){
+checkGraphqlResponse = function(response, session){
 
 # Terminate session if response doesn't contain data     
 if(is_empty(response$data)){

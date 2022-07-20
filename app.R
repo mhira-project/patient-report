@@ -176,7 +176,7 @@ defaultLang = "en"
       
       response = getPatientReport(token = session$userData, patientId = patientId())
      
-      checkGraphqlResponse(response) # can terminate app
+      checkGraphqlResponse(response, session) # can close session
      
       
       # Simplify data and remove incomplete questionnaires
