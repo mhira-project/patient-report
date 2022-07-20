@@ -19,16 +19,16 @@
           }
 
 
-.warning{ padding: 20px;
-  background-color: #f44336; /* Red */
+/*.warning{ padding: 20px;
+  background-color: #f44336; 
   color: white;
-  margin-bottom: 15px;}
+  margin-bottom: 15px;} */
   
 
 .shiny-notification {
              position:fixed;
+             width: 15vw;
              top: calc(50%);
              left: calc(50%);
              }
-
 
