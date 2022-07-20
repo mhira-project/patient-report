@@ -81,6 +81,7 @@ calculateScales = function(simplifiedData, questionnaireScripts) {
   x = df %>% select(assessmentId, assessmentName, questionnaireId,questionnaireVersionId,
                 questionnaireShortName, questionnaireFullName,
                 language, assessmentDateTime =  updatedAt) %>%
+    drop_na(assessmentDateTime) %>%
     slice_tail() %>%
     bind_cols(scales)
   
