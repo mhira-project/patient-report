@@ -37,9 +37,7 @@ if(is_empty(response$data$generatePatientReport$questionnaireScripts)){
     type = "error",
     duration = 20)
   session$close()}
-
-  filter(name == "scales_table" | name == "scales_function")
-  
+ 
  if(is_empty(response$data$generatePatientReport$questionnaireScripts %>%
              filter(name == "scales_table" | name == "scales_function"))){
     showNotification(
