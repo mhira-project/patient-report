@@ -1,7 +1,8 @@
-interpretTable = function(scales, transMatrix, showScale = F, lang){
+interpretTable = function(scales, transMatrix, showScale = F, render = T, lang){
   
 
 df = scales %>%  
+  as.data.frame() %>%
   arrange(desc(assessmentDateTime), assessmentName, text_order) %>%
   select(
     time = assessmentDateTime,
@@ -23,15 +24,14 @@ df = df %>%
         select(-scales) %>%
         unique() 
 
+colnames(df) <- transMatrix[c("time","assessment","interpretation","recommendation", "warning"), lang]
+
 } else {
       df$assessment[duplicated(df$assessment)] <- NA
+      df$time[duplicated(df$time)] <- NA
 }
 
 df$time = as.character(df$time)
-
-
-colnames(df) <- transMatrix[c("time","assessment","interpretation","recommendation", "warning"), lang]
-
 
 dfRendered = df %>% 
               datatable(options = list(order = list(list(1, 'desc')))) %>% 
@@ -41,6 +41,6 @@ dfRendered = df %>%
                           color = styleEqual(c(TRUE), c('white'))
                     ) 
 
-return(dfRendered) 
+if (render){return(dfRendered)} else {return(df)} 
   
 }
