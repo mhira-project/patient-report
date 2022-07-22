@@ -261,6 +261,7 @@ defaultLang = "en"
     
    observe({
      req(scalesFlt())
+     print("Rendering elements...")
  
       for (q in scalesFlt()$questionnaireShortName %>% unique){
         
@@ -270,7 +271,7 @@ defaultLang = "en"
           s = scalesFlt() %>% filter(questionnaireShortName == my_q)
             
     # Create plot  
-          
+        print("... plot")  
            plots = renderPlot(
               expr = severityPlot(scales = s, TimeOnXAxis = T),
               height = "auto", 
@@ -278,22 +279,31 @@ defaultLang = "en"
             )
             
     # Create interpretation 
+           print("... interpretation Table")
             
       interpret =   s %>% interpretTable(showScale = F, transMatrix =  transMatrix, lang = lang())
      
      
      # create score table 
+      print("... scores")
             
      sco =    s %>%  
                 arrange(desc(assessmentDateTime), questionnaireShortName, text_order) %>%
-                select(assessment = assessmentName,
-                       time = assessmentDateTime,
+                select(time = assessmentDateTime,
+                       assessment = assessmentName,
                        scale = variable,
-                       score = value)
+                       score = value,
+                       level = level,
+                       lower_cutoff = low_cut,
+                       upper_cutoff = high_cut
+                       )
+     
+     sco$assessment[duplicated(sco$assessment)] <- NA
+     sco$time[duplicated(sco$time)] <- NA
            
-     colnames(sco) <- transMatrix[c("assessment","time","scale", "score"), lang()] 
+     colnames(sco) <- transMatrix[c("assessment","time","scale", "score", "level", "low_cut", "high_cut"), lang()] 
               
-     scores =   sco %>%  renderDataTable() 
+     scores =   sco %>%  datatable() 
       
             
             
@@ -339,4 +349,3 @@ defaultLang = "en"
 ## APP ## --------------------------------------------------------------------
 
 shinyApp(ui = ui, server = server)
-

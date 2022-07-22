@@ -12,7 +12,7 @@ df = scales %>%
     recommendation = recommendation,
     warning = warning) 
 
-
+df$time = as.character(df$time)
 
 if (showScale == F){
 
@@ -31,7 +31,7 @@ colnames(df) <- transMatrix[c("time","assessment","interpretation","recommendati
       df$time[duplicated(df$time)] <- NA
 }
 
-df$time = as.character(df$time)
+
 
 dfRendered = df %>% 
               datatable(options = list(order = list(list(1, 'desc')))) %>% 
