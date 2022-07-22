@@ -301,7 +301,7 @@ defaultLang = "en"
      sco$assessment[duplicated(sco$assessment)] <- NA
      sco$time[duplicated(sco$time)] <- NA
            
-     colnames(sco) <- transMatrix[c("assessment","time","scale", "score", "level", "low_cut", "high_cut"), lang()] 
+     colnames(sco) <- transMatrix[c("time","assessment","scale", "score", "level", "low_cut", "high_cut"), lang()] 
               
      scores =   sco %>%  datatable() 
       
