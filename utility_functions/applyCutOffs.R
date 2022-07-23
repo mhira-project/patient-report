@@ -9,7 +9,12 @@ applyCutOffs = function(scales, questionnaireScripts){
   filter(name == "cutoffs")
   
   if(nrow(qS) == 0){
-    df = scales %>% full_join( as_tibble(matrix(nrow = 0, ncol = length(cutoffColnames) + 1), .name_repair = ~ c('questionnaireId',cutoffColnames))) 
+    df = scales %>%
+      full_join( 
+        as_tibble(
+          matrix(nrow = 0, ncol = length(cutoffColnames) + 1),
+          .name_repair = ~ c('questionnaireId',cutoffColnames)) %>%
+        mutate(scale = as.character(scale))) 
     return(df)}
   
   
@@ -36,8 +41,8 @@ cutoffs = cutoffs %>% select(c("questionnaireVersionId", all_of(cutoffColnames))
 
 
 result = scales %>% 
-  full_join(cutoffs, by = c("questionnaireVersionId" = "questionnaireVersionId", "variable" = "scale")) %>%
-  group_by(questionnaireId, variable) %>% 
+  full_join(cutoffs, by = c("questionnaireVersionId" = "questionnaireVersionId", "scale" = "scale")) %>%
+  group_by(questionnaireId, scale) %>% 
   mutate(max_scale = high_cut == max(high_cut))  %>% 
   filter((low_cut <= value & high_cut > value & max_scale == F) | (low_cut <= value & high_cut >= value & max_scale == T) | (is.na(low_cut) & is.na(high_cut))) %>% 
   select(- max_scale) %>% 

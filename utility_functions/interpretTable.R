@@ -7,7 +7,7 @@ df = scales %>%
   select(
     time = assessmentDateTime,
     assessment = assessmentName,
-    scales = variable,
+    scales = scale,
     interpretation = interpretation,
     recommendation = recommendation,
     warning = warning) 

@@ -1,5 +1,3 @@
-
-
 calculateScales = function(simplifiedData, questionnaireScripts) {
  print("calculateScales")
   
@@ -53,14 +51,14 @@ calculateScales = function(simplifiedData, questionnaireScripts) {
    
    # Apply script to questionnaire data and store response in "scales"
 
-  scales =  data.frame(variable=character(0),value=integer(0))
+  scales =  data.frame(scale=character(0),value=integer(0))
     
   if(dfScr$name == "scales_table"){
       scr = fread(dfScr$scriptText)   
       
      for (s in 1:nrow(scr)){
        scales[s,"value"] <- eval(parse(text = scr$Formula[s]), envir = dfItems)
-       scales[s, "variable"] <- scr$ScaleName[s]
+       scales[s, "scale"] <- scr$ScaleName[s]
        }
   
        scales = bind_cols(scales, scr %>% select(scaleMin, scaleMax, mean, sd, plotGroup))
@@ -68,10 +66,10 @@ calculateScales = function(simplifiedData, questionnaireScripts) {
   }
   
   if(dfScr$name == "scales_function"){
-   eval(parse(text = dfScr$scriptText))   
-    
-   scales = scales_function(dfItems)
-    
+ 
+     dfScr$scriptText =  gsub("\\r", "", dfScr$scriptText)
+     eval(parse(text = dfScr$scriptText))   
+     scales = scales_function(dfItems)
   
   }
   

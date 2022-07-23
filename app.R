@@ -162,7 +162,6 @@ defaultLang = "en"
 
      
   # GET PATIENT DATA AND PRE-PROCESS: DATA, SCALES, ADD CUTOFF -----------------
-      
   
     data = reactiveVal() # the imported data as dataframe
     scales = reactiveVal() # calclulated scales
@@ -291,7 +290,7 @@ defaultLang = "en"
                 arrange(desc(assessmentDateTime), questionnaireShortName, text_order) %>%
                 select(time = assessmentDateTime,
                        assessment = assessmentName,
-                       scale = variable,
+                       scale = scale,
                        score = value,
                        level = level,
                        lower_cutoff = low_cut,
