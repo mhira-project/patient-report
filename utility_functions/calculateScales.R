@@ -1,3 +1,5 @@
+
+
 calculateScales = function(simplifiedData, questionnaireScripts) {
  print("calculateScales")
   
@@ -13,9 +15,7 @@ calculateScales = function(simplifiedData, questionnaireScripts) {
     session$close()}
   
   
-  d = data.frame() # Empty data frame to collect the result
-  
-
+d = data.frame() # Empty data frame to collect the result
 
   
  for (i in unique(simplifiedData$questionnaireId)){
@@ -70,11 +70,21 @@ calculateScales = function(simplifiedData, questionnaireScripts) {
      dfScr$scriptText =  gsub("\\r", "", dfScr$scriptText)
      eval(parse(text = dfScr$scriptText))   
      scales = scales_function(dfItems)
+     
+     }
   
-  }
   
   
-   
+if(!all(c("scale" ,"value", "scaleMin", "scaleMax", "plotGroup") %in% colnames(scales))){
+  showNotification(
+    paste("The scales_table or scales_function did not produce the required colums for:",
+          df$questionnaireShortName,
+          df$language,
+          sep = " "), 
+    type = "warning",
+    duration = 15)
+    next}
+  
 
   x = df %>% select(assessmentId, assessmentName, questionnaireId,questionnaireVersionId,
                 questionnaireShortName, questionnaireFullName,

@@ -1,34 +1,103 @@
 severityPlot = function(scales,  TimeOnXAxis = TRUE){
   
-  s = scales %>% filter(plotGroup > 0)
-
-if(!TimeOnXAxis){
-  ggplot(s, aes(x = assessmentName, y = value, shape = scale, group = scale, fill = level)) +
-    geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = low_cut, ymax = high_cut ), alpha = 0.9) +
-    geom_point(size = 3.5) +
-    geom_line(alpha = 0.3, lwd = 2) + 
-    ylim(c(min(s$scaleMin)), max(s$scaleMax)) + 
-    scale_fill_brewer(type = "qual", palette = 2, direction = -1) +
-    ylab("value") +
-    xlab("Assessment") +
-    theme_light() +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) 
+  s = scales %>% filter(plotGroup > 0) %>% arrange(scale, assessmentDateTime)
+  
+  l = s %>% select(high_cut, level) %>% unique %>% arrange(high_cut) # problem for having the same level name for different cutoffs
+  
+  s$level = factor(s$level, levels = l$level)
+  
+  if(nrow(s) < 1){return(NULL)}
+  
+  if (length(unique(s$assessmentDateTime)) == 1) {
+    p = ggplot(s, aes(x=scale, y=value, fill = level)) +
+      geom_segment( aes(x=scale, xend=scale, y=0, yend=value)) 
     
-   
+    if(any(!is.na(s$low_cut)) & any(!is.na(s$high_cut))){
+    p = p + 
+      geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = low_cut, ymax = high_cut ), alpha = 0.5)} 
+    
+    p = p +   
+      geom_point( size=5, color="red", fill=alpha("orange", 0.3), alpha=0.7, shape=21, stroke=2) +
+      ggtitle(paste(s$assessmentDateTime, s$assessmentName, sep = " - ")) 
+    
+  } else {
+    
+    if(TimeOnXAxis){ 
+      p =  ggplot(s, aes(x = assessmentDate, y = value, colour = scale, group = scale)) +
+        xlab("Assessment Date") +
+        scale_x_date(date_labels = "%Y %b %d")  +
+        geom_blank() 
+      
+      if(any(!is.na(s$low_cut)) & any(!is.na(s$high_cut))){
+        p = p +
+          geom_rect(aes(xmin = min(assessmentDate) -5,
+                        xmax = max(assessmentDate) + 5,
+                        ymin = low_cut,
+                        ymax = high_cut,
+                        fill = level),
+                     alpha = 0.9,
+                     colour = "white"
+                    )   
+      
+      }
+      } else {
+        
+        p =  ggplot(s, aes(x = assessmentName, y = value, colour = scale, group = scale)) +
+          xlab("Assessment") +
+          + geom_blank()
+        
+        if(any(!is.na(s$low_cut)) & any(!is.na(s$high_cut))){
+          p = p + 
+            geom_rect(aes(
+                        xmin = -Inf,
+                        xmax = Inf,
+                        ymin = low_cut,
+                        ymax = high_cut,
+                        fill = level),
+                      alpha = 0.9,
+                      colour = "white")}  
+        
+      }
+    
+      p = p + 
+        geom_point(size=3.5,
+                  fill=alpha("white", 1),
+                   alpha=0.7,
+                   shape=21,
+                   stroke=2,
+                   position = position_jitter(width = .3, height = 0, seed = 1)) 
+      
+      
+      p = p + 
+        geom_line(alpha = 0.5, 
+                  lwd = 2,
+                  position = position_jitter(width = .3, height = 0, seed = 1)) 
+      
+  #    if(any(!is.na(s$scaleMin)) & any(!is.na(s$scaleMax))){
+  #      p = p + ylim(c(min(s$scaleMin)), max(s$scaleMax))
+  #    }
   
-} else {
-  ggplot(s, aes(x = assessmentDate, y = value, shape = scale, group = scale, fill = level)) +
-    geom_rect(aes(xmin = min(assessmentDate) -5, xmax = max(assessmentDate) + 5, ymin = low_cut, ymax = high_cut ), alpha = 0.9) +
-    geom_point(size = 3.5) +
-    geom_line(alpha = 0.3, lwd = 2) + 
-    ylim(c(min(s$scaleMin)), max(s$scaleMax)) + 
-    scale_fill_brewer(type = "qual", palette = 2, direction = -1) +
-    ylab("value") +
-    xlab("Assessment Date") +
+     }
+    
+    
+  p = p +  
     theme_light() +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
-    scale_x_date(date_labels = "%Y %b %d")  
-}
+ #   scale_colour_brewer(palette = "Set2", direction = 1) +
+    scale_fill_brewer(type = "seq", palette = "Reds", direction = 1) +
+    ylab("value") +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) 
   
-  } 
+  if(length(s$plotGroup %>% na.omit %>% unique) > 1){
+    p = p +
+      facet_wrap( ~ plotGroup, scales = "free")}
+  
+
+  
+  
+  
+  return(p)
+  
+} 
+
+
 

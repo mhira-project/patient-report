@@ -8,9 +8,6 @@ library(httr)
 library(jsonlite)
 library(DT)
 library(crosstalk)
-#library(tidyjson)
-
-
 
 # APP SETTINGS ---------------------------------------------------------------- 
 
@@ -32,6 +29,7 @@ source("utility_functions/checkGraphqlResponse.R")
 
 
 inactivity = inactivity(timeoutSeconds)
+
 
 
 # LOAD TRANSLATION MATRIX -----------------------------------------------------
@@ -68,7 +66,6 @@ defaultLang = "en"
          )),
       
      br(),
-     
      
      uiOutput("selectAss")
 
@@ -302,25 +299,27 @@ defaultLang = "en"
            
      colnames(sco) <- transMatrix[c("time","assessment","scale", "score", "level", "low_cut", "high_cut"), lang()] 
               
-     scores =   sco %>%  datatable() 
+     scores =   sco %>%  datatable(options = list(pageLength = 100)) 
       
-            
-            
+
    # bring plot, interpret and score table together in div
            
-             output[[my_q]] <-  renderUI(div(class= "box2",
-                                       h1(my_q),
-                                       tagList(h3(transMatrix["figure", lang()]),
-                                       plots,
-                                       br(),
-                                       hr(),
-                                       h3(transMatrix["evaluation", lang()]),
-                                       interpret,
-                                       br(),
-                                       hr(),
-                                       h3(transMatrix["data", lang()]),
-                                       scores))
-                                        )
+    output[[my_q]] <-  renderUI(
+                          div(
+                              h1(my_q),  
+                              class= "box2",
+                              h3(transMatrix["figure", lang()]),
+                              if(!is_empty(plots)){plots},
+                              br(),
+                              hr(),
+                              h3(transMatrix["data", lang()]),
+                              scores,
+                              br(),
+                              hr(),
+                              h3(transMatrix["evaluation", lang()]),
+                              interpret
+                              )
+                          )
         })
       }
       
