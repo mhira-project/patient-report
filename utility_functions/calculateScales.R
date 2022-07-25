@@ -1,5 +1,4 @@
 
-
 calculateScales = function(simplifiedData, questionnaireScripts) {
  print("calculateScales")
   

@@ -2,7 +2,13 @@ severityPlot = function(scales,  TimeOnXAxis = TRUE){
   
   s = scales %>% filter(plotGroup > 0) %>% arrange(scale, assessmentDateTime)
   
-  l = s %>% select(high_cut, level) %>% unique %>% arrange(high_cut) # problem for having the same level name for different cutoffs
+  dfDummy =  s %>% # dummy data to set the limits of the y-axis
+   mutate(value  = ifelse(is.na(scaleMax), value, scaleMax)) %>% 
+    bind_rows(s %>%
+                mutate(value = ifelse(is.na(scaleMin), value, scaleMin)))
+    
+
+  l = s %>% arrange(plotGroup, high_cut,  scale) %>% select(high_cut,  level) %>% unique  # problem with duplicated factor levels if e.g. positive = 4, and positive = 1
   
   s$level = factor(s$level, levels = l$level)
   
@@ -10,15 +16,18 @@ severityPlot = function(scales,  TimeOnXAxis = TRUE){
   
   if (length(unique(s$assessmentDateTime)) == 1) {
     p = ggplot(s, aes(x=scale, y=value, fill = level)) +
-      geom_segment( aes(x=scale, xend=scale, y=0, yend=value)) 
+      geom_blank(data = dfDummy)
     
     if(any(!is.na(s$low_cut)) & any(!is.na(s$high_cut))){
     p = p + 
-      geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = low_cut, ymax = high_cut ), alpha = 0.5)} 
+      geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = low_cut, ymax = high_cut ), alpha = 0.4)} 
     
     p = p +   
-      geom_point( size=5, color="red", fill=alpha("orange", 0.3), alpha=0.7, shape=21, stroke=2) +
+      geom_segment( aes(x=scale, xend=scale, y=0, yend=value)) + 
+      geom_point( size=5, color="darkblue", fill=alpha("white", 0.3), alpha=0.7, shape=21, stroke=2) +
       ggtitle(paste(s$assessmentDateTime, s$assessmentName, sep = " - ")) 
+    
+
     
   } else {
     
@@ -26,7 +35,7 @@ severityPlot = function(scales,  TimeOnXAxis = TRUE){
       p =  ggplot(s, aes(x = assessmentDate, y = value, colour = scale, group = scale)) +
         xlab("Assessment Date") +
         scale_x_date(date_labels = "%Y %b %d")  +
-        geom_blank() 
+        geom_blank(data = dfDummy) 
       
       if(any(!is.na(s$low_cut)) & any(!is.na(s$high_cut))){
         p = p +
@@ -44,7 +53,7 @@ severityPlot = function(scales,  TimeOnXAxis = TRUE){
         
         p =  ggplot(s, aes(x = assessmentName, y = value, colour = scale, group = scale)) +
           xlab("Assessment") +
-          + geom_blank()
+          + geom_blank(data = dfDummy)
         
         if(any(!is.na(s$low_cut)) & any(!is.na(s$high_cut))){
           p = p + 
@@ -73,9 +82,7 @@ severityPlot = function(scales,  TimeOnXAxis = TRUE){
                   lwd = 2,
                   position = position_jitter(width = .3, height = 0, seed = 1)) 
       
-  #    if(any(!is.na(s$scaleMin)) & any(!is.na(s$scaleMax))){
-  #      p = p + ylim(c(min(s$scaleMin)), max(s$scaleMax))
-  #    }
+
   
      }
     
@@ -89,7 +96,9 @@ severityPlot = function(scales,  TimeOnXAxis = TRUE){
   
   if(length(s$plotGroup %>% na.omit %>% unique) > 1){
     p = p +
-      facet_wrap( ~ plotGroup, scales = "free")}
+      facet_wrap(. ~ plotGroup, scales = "free")}
+  
+
   
 
   

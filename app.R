@@ -47,7 +47,6 @@ defaultLang = "en"
       title = tags$a(href='http://mhira-project.org',
                      tags$img(src='mhira_logo.png', height='50', width='150'),
                      'MHIRA')
-      
     ),
     
     # SIDEBAR ------------------------------------------------------------------
@@ -68,11 +67,10 @@ defaultLang = "en"
      br(),
      
      uiOutput("selectAss")
-
    
      ),
     
-    # BODY --------------------------------------------------------------------
+    # BODY -------------------------------------------------------------------
     dashboardBody(
        
       includeCSS("www/myCSS.css"),
@@ -92,12 +90,8 @@ defaultLang = "en"
        #   uiOutput("scaleFlt")
         )
       
-      
       )
       
-
-      
-                    
     
     
   # CLOSE USER INTERFACE UI ---------------------------------------------------
@@ -110,12 +104,12 @@ defaultLang = "en"
   
   # OBSERVE INACTIVITY AND CLOSE APP ------------------------------------------  
     
-    observeEvent(input$timeOut, { 
-      print(paste0(transMatrix["timeoutAt", lang()], " ", Sys.time()))
+    observeEvent(input$timeOut, {
+      print(paste0("Session was closed at", " ", Sys.time()))
       showModal(modalDialog(
         title = "Timeout",
-        paste(transMatrix["timeoutReason", lang()],
-              input$timeOut,
+        paste("Session was closed afer",
+              input$timeOut
         ),
         footer = NULL
       ))
@@ -226,7 +220,6 @@ defaultLang = "en"
         startExpanded = TRUE)              
       
     })
-    
 
   # FILTER ACCORDING TO SELECTED ASSESSMENTS --------------------------------
     
