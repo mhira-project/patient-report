@@ -9,6 +9,7 @@ library(jsonlite)
 library(DT)
 library(crosstalk)
 
+
 # APP SETTINGS ---------------------------------------------------------------- 
 
 timeoutSeconds <- 10*60 # App closes after x seconds of inactivity
@@ -283,18 +284,18 @@ defaultLang = "en"
                        scale = scale,
                        score = value,
                        level = level,
-                       lower_cutoff = low_cut,
-                       upper_cutoff = high_cut
+                       cutoffs = all_cutoffs
                        )
+     
+     sco$time = sub(" ", "<br/>",as.character(sco$time))
      
      sco$assessment[duplicated(sco$assessment)] <- NA
      sco$time[duplicated(sco$time)] <- NA
            
-     colnames(sco) <- transMatrix[c("time","assessment","scale", "score", "level", "low_cut", "high_cut"), lang()] 
+     colnames(sco) <- transMatrix[c("time","assessment","scale", "score", "level", "cutoffs"), lang()] 
               
-     scores =   sco %>%  datatable(options = list(pageLength = 100)) 
+     scores =   sco %>%  datatable(options = list(pageLength = 100), escape = FALSE) 
       
-
    # bring plot, interpret and score table together in div
            
     output[[my_q]] <-  renderUI(
@@ -317,6 +318,7 @@ defaultLang = "en"
       }
       
    }) %>% bindEvent(scalesFlt())
+    
       
     
   # CREATE TABS ---------------------------------------------------------------

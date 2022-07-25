@@ -107,6 +107,3 @@ severityPlot = function(scales,  TimeOnXAxis = TRUE){
   return(p)
   
 } 
-
-
-

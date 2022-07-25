@@ -1,4 +1,4 @@
-interpretTable = function(scales, transMatrix, showScale = F, render = T, lang){
+interpretTable = function(scales, transMatrix, lang, showScale = F, render = T){
   
 
 df = scales %>%  
@@ -12,7 +12,7 @@ df = scales %>%
     recommendation = recommendation,
     warning = warning) 
 
-df$time = as.character(df$time)
+df$time = sub(" ", "<br/>", as.character(df$time))
 
 if (showScale == F){
 
@@ -34,7 +34,7 @@ colnames(df) <- transMatrix[c("time","assessment","interpretation","recommendati
 
 
 dfRendered = df %>% 
-              datatable(options = list(order = list(list(1, 'desc')), pageLength = 100)) %>% 
+              datatable(options = list(order = list(list(1, 'desc')), pageLength = 100), escape = FALSE) %>% 
               formatStyle(valueColumns = transMatrix["warning", lang], # https://rstudio.github.io/DT/010-style.html
                           columns = c(transMatrix["warning", lang]), 
                           backgroundColor = styleEqual(c(TRUE), c('red')),

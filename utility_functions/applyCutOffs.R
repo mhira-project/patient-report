@@ -15,6 +15,9 @@ applyCutOffs = function(scales, questionnaireScripts){
           matrix(nrow = 0, ncol = length(cutoffColnames) + 1),
           .name_repair = ~ c('questionnaireId',cutoffColnames)) %>%
         mutate(scale = as.character(scale))) 
+    
+    df$cutoffs = NA
+    
     return(df)}
   
   
@@ -40,9 +43,22 @@ if(!requiredColumsCutoffs){
 cutoffs = cutoffs %>% select(c("questionnaireVersionId", all_of(cutoffColnames))) # if the cutoff files change, this needs to be adapted
 
 
-result = scales %>% 
-  full_join(cutoffs, by = c("questionnaireVersionId" = "questionnaireVersionId", "scale" = "scale")) %>%
-  group_by(questionnaireId, scale) %>% 
+result1 = scales %>% 
+  full_join(cutoffs, by = c("questionnaireVersionId" = "questionnaireVersionId", "scale" = "scale")) 
+
+dfCutoffs = result1 %>% 
+    group_by(questionnaireId, scale, assessmentDateTime) %>%          
+    mutate(all_cutoffs = paste0("[", level, ": ", low_cut, " - ", high_cut, "]")) %>%
+    summarise(all_cutoffs = ifelse(is.na(level), NA, paste(all_cutoffs, collapse = "<br/>"))) %>%
+    unique %>%
+    ungroup
+
+result2 = result1 %>%
+  left_join(dfCutoffs)
+
+
+result = result2 %>% 
+  group_by(questionnaireId, scale) %>%
   mutate(max_scale = high_cut == max(high_cut))  %>% 
   filter((low_cut <= value & high_cut > value & max_scale == F) | (low_cut <= value & high_cut >= value & max_scale == T) | (is.na(low_cut) & is.na(high_cut))) %>% 
   select(- max_scale) %>% 
