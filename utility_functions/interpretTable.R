@@ -17,7 +17,7 @@ df$time = sub(" ", "<br/>", as.character(df$time))
 if (showScale == F){
 
 df = df %>% 
-        group_by(assessment) %>%
+        group_by(time) %>%
         mutate(interpretation = paste(interpretation %>% na.omit(), collapse = " "),
                recommendation = paste(recommendation %>% na.omit(), collapse = " "),
                warning = any(warning)) %>%
