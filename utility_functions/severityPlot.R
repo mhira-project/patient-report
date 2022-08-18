@@ -39,8 +39,8 @@ severityPlot = function(scales,  TimeOnXAxis = TRUE){
       
       if(any(!is.na(s$low_cut)) & any(!is.na(s$high_cut))){
         p = p +
-          geom_rect(aes(xmin = min(assessmentDate) -5,
-                        xmax = max(assessmentDate) + 5,
+          geom_rect(aes(xmin = min(assessmentDate) -1,
+                        xmax = max(assessmentDate) + 1,
                         ymin = low_cut,
                         ymax = high_cut,
                         fill = level),
