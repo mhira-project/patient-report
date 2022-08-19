@@ -12,7 +12,7 @@ library(crosstalk)
 
 # APP SETTINGS ---------------------------------------------------------------- 
 
-timeoutSeconds <- 10*60 # App closes after x seconds of inactivity
+source("settings.R") # Please modify the settings file for changes to settings
 
 # LOAD GRAPHQL ----------------------------------------------------------------
 
@@ -36,7 +36,6 @@ inactivity = inactivity(timeoutSeconds)
 # LOAD TRANSLATION MATRIX -----------------------------------------------------
 
 transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
-defaultLang = "en"
 
 # USER INTERFACE ##------------------------------------------------------------
 
@@ -165,7 +164,7 @@ defaultLang = "en"
       req(!is_empty(session$userData))
       print("get patient report via graphql")
       
-      response = getPatientReport(token = session$userData, patientId = patientId())
+      response = getPatientReport(token = session$userData, patientId = patientId(), url = url)
      
       checkGraphqlResponse(response, session) # can close session
      
@@ -263,7 +262,7 @@ defaultLang = "en"
     # Create plot  
         print("... plot")  
            plots = renderPlot(
-              expr = severityPlot(scales = s, TimeOnXAxis = T),
+              expr = severityPlot(scales = s, TimeOnXAxis = TimeOnXAxis),
               height = "auto", 
               width = 600
             )
@@ -271,7 +270,7 @@ defaultLang = "en"
     # Create interpretation 
            print("... interpretation Table")
             
-      interpret =   s %>% interpretTable(showScale = F, transMatrix =  transMatrix, lang = lang())
+      interpret =   s %>% interpretTable(showScale = showScale, transMatrix =  transMatrix, lang = lang())
      
      
      # create score table 
