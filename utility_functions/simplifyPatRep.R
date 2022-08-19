@@ -58,8 +58,11 @@ simplifyPatRep = function(response){
    mutate(createdAt = lubridate::as_datetime(createdAt),
           updatedAt = lubridate::as_datetime(updatedAt)) 
 
- # Return simplfied dataframe
   
+ df = df %>% mutate(questionnaireShortName = coalesce(questionnaireShortName,questionnaireFullName) # in case short name is missing
+                    )
+  # Return simplfied dataframe
+ 
  return(df)
 
 }
