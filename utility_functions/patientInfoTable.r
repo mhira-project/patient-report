@@ -23,7 +23,6 @@ patientInfoTable = function(response, selectPatientInfo, render = T){
  dfRendered = df %>% 
    renderDT(options = list(dom = 't'), rownames= FALSE) 
    
- 
 if(render == TRUE){return(dfRendered)} else {return(df)}
   
 }
