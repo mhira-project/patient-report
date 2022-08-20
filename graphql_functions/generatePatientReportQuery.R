@@ -1,11 +1,14 @@
-
-
 generatePatientReportQuery = function(patientId){
 
 GQL = 'query {
   generatePatientReport (id: patientId){							# Please use UUID - can be additional field in database. 
      patient{
       medicalRecordNo
+      firstName
+      middleName
+      lastName
+      birthDate
+      gender
     }
     answeredQuestionnaires{
       assessmentId

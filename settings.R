@@ -12,3 +12,14 @@ TimeOnXAxis = T
 
 # Subscales in interpretation table show one scale per row or are aggregated
 showScale = F
+
+# Show this patient information. Remove those that should not be shown.
+selectPatientInfo = c(
+        'medicalRecordNo',
+        'initials',
+        #'firstName',
+        #'middleName',
+        #'lastName',
+        #'birthDate'
+        'age',
+        'gender')

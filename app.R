@@ -27,6 +27,7 @@ source("utility_functions/severityPlot.R")
 source("utility_functions/inactivity.R")
 source("utility_functions/interpretTable.R")
 source("utility_functions/checkGraphqlResponse.R")
+source("utility_functions/patientInfoTable.R")
 
 
 inactivity = inactivity(timeoutSeconds)
@@ -66,6 +67,7 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
       
      br(),
      
+     
      uiOutput("selectAss")
    
      ),
@@ -74,21 +76,22 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
     dashboardBody(
        
       includeCSS("www/myCSS.css"),
-      
+            fluidRow(
+     #   h1("Patient"),
+        dataTableOutput("patInfo", width = "50%"),
+
+          br()
+        ), 
+   
       fluidRow(
 
-            width = 12,
-           # h3(transMatrix["promtTabSelection", lang()], class = "select"),
+
           
             uiOutput("tab")
             
-        ),
-      
-      fluidRow(
-
-          width = 12,
-       #   uiOutput("scaleFlt")
         )
+      
+
       
       )
       
@@ -117,7 +120,7 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
     })
     
  
-    # GET patientID FROM THE URL ------------------------------------------------
+  # GET patientID FROM THE URL ------------------------------------------------
     
     patientId =  reactiveVal()
     
@@ -133,14 +136,14 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
     }) 
     
     
-   # STORE LOCAL STORAGE EXTRACTED TOKEN TO SHINY SESSION OBJECT
+  # STORE LOCAL STORAGE EXTRACTED TOKEN TO SHINY SESSION OBJECT ----------------
     observe({ 
       print("writing token to session object")
       session$userData  = fromJSON(input$accessToken)$accessToken
            }) %>%  bindEvent(input$accessToken)
     
     
-  # CHECK LANGUAGE AND CREATE 'LANG' REACTIVE VALUE
+  # CHECK LANGUAGE AND CREATE 'LANG' REACTIVE VALUE ----------------------------
      
     lang = reactiveVal(defaultLang)
     
@@ -152,10 +155,9 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
     }) %>% bindEvent(input$currentLang)
 
      
-  # GET PATIENT DATA AND PRE-PROCESS: DATA, SCALES, ADD CUTOFF -----------------
+  # GET PATIENT REPORT DATA ---------------------------------------------------
   
-    data = reactiveVal() # the imported data as dataframe
-    scales = reactiveVal() # calclulated scales
+    response = reactiveVal() # the imported data as dataframe
     
       
     observe({
@@ -167,13 +169,46 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
       response = getPatientReport(token = session$userData, patientId = patientId(), url = url)
      
       checkGraphqlResponse(response, session) # can close session
-     
       
+      response(response)
+      
+      print("data has been obtained from API")
+      
+    }) %>%  bindEvent(input$accessToken)
+      
+  
+  # RENDER PATIENT INFORMATION TABLE
+  
+    observe({
+      req(!is_empty(response()))
+      print("rendering patientInfo")
+      
+      response = response()
+      
+      patInfo = patientInfoTable(response = response,
+                                selectPatientInfo = selectPatientInfo)
+      
+      output$patInfo = patInfo 
+      
+      
+    }) 
+      
+      
+  # CALCULATE SCALES AND APPLY CUTOFFS  
+    
+    data = reactiveVal() # the imported data as dataframe
+    scales = reactiveVal() # calculated scales 
+    
+    observe({
+      req(!is_empty(response()))
+      
+      response = response()
+     
       # Simplify data and remove incomplete questionnaires
       
       data = simplifyPatRep(response = response)  
       
-      # Terminate session if no competed data
+      # Terminate session if no completed data
       
       if(is_empty(data)){
         showNotification(
@@ -192,13 +227,12 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
   
       scales = applyCutOffs(scales = scales, questionnaireScripts =  questionnaireScripts)
       
-      
+ 
+      data(data)
+      scales(scales)
+      print("scales have been calculated and cutoffs applied")
   
-          data(data)
-          scales(scales)
-          print("data has been loaded")
-  
-            }) %>%  bindEvent(input$accessToken)
+            }) 
     
   # CREATE CHECKBOX FOR ASSESSMENT SELECTION (SIDEBAR)--------------------------   
     
@@ -293,7 +327,7 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
            
      colnames(sco) <- transMatrix[c("time","assessment","scale", "score", "level", "cutoffs"), lang()] 
               
-     scores =   sco %>%  datatable(options = list(pageLength = 100), escape = FALSE) 
+     scores =   sco %>%  renderDT(options = list(pageLength = 100), escape = FALSE) 
       
    # bring plot, interpret and score table together in div
            
@@ -318,7 +352,7 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
       
    }) %>% bindEvent(scalesFlt())
     
-      
+  
     
   # CREATE TABS ---------------------------------------------------------------
 

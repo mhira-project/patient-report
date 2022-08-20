@@ -32,14 +32,13 @@ colnames(df) <- transMatrix[c("time","assessment","interpretation","recommendati
 }
 
 
-
 dfRendered = df %>% 
               datatable(options = list(order = list(list(1, 'desc')), pageLength = 100), escape = FALSE) %>% 
               formatStyle(valueColumns = transMatrix["warning", lang], # https://rstudio.github.io/DT/010-style.html
                           columns = c(transMatrix["warning", lang]), 
                           backgroundColor = styleEqual(c(TRUE), c('red')),
                           color = styleEqual(c(TRUE), c('white'))
-                    ) 
+                    ) %>% renderDT() 
 
 if (render){return(dfRendered)} else {return(df)} 
   

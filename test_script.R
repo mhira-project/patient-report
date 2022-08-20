@@ -4,7 +4,7 @@
 
 # Load functions
 
-setwd("shiny_apps/patient-report/") # make sure you are in the app folder, else source files will not be found
+setwd("/home/mhira/shiny_apps/patient-report/") # make sure you are in the app folder, else source files will not be found
 
 source("graphql_functions/getToken.R")
 source("graphql_functions/getPatientReport.R")
@@ -19,7 +19,7 @@ source("utility_functions/interpretTable.R")
 patientId = 1 # patient_id can be found from the URL when clicking a report on the patient detail view in MHIRA
 token = getToken(Username = "yourUserName", Password = "yourPassword")
 
-response = getPatientReport(token = token, patientId = patientId)
+response = getPatientReport(token = token, patientId = patientId, url = url)
 
 simplifiedData = simplifyPatRep(response)
 data = simplifiedData
