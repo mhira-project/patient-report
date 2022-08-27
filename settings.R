@@ -20,6 +20,6 @@ selectPatientInfo = c(
         #'firstName',
         #'middleName',
         #'lastName',
-        #'birthDate'
+        #'birthDate',
         'age',
         'gender')
