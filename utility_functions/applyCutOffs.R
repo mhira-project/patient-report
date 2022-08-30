@@ -3,7 +3,7 @@ applyCutOffs = function(scales, questionnaireScripts){
   
   
   
-  cutoffColnames = c('scale', 'low_cut', 'high_cut', 'level', 'warning', 'text_order', 'interpretation', 'recommendation')
+  cutoffColnames = c('scale', 'low_cut', 'high_cut', 'level', 'warning', 'text_order', 'interpretation', 'recommendation', 'all_cutoffs')
   
   qS = questionnaireScripts %>%
   filter(name == "cutoffs")
