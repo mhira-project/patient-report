@@ -3,7 +3,7 @@ applyCutOffs = function(scales, questionnaireScripts){
   
   
   
-  cutoffColnames = c('scale', 'low_cut', 'high_cut', 'level', 'warning', 'text_order', 'interpretation', 'recommendation', 'all_cutoffs')
+  cutoffColnames = c('scale', 'low_cut', 'high_cut', 'level', 'warning', 'text_order', 'interpretation', 'recommendation')
   
   qS = questionnaireScripts %>%
   filter(name == "cutoffs")
@@ -17,6 +17,7 @@ applyCutOffs = function(scales, questionnaireScripts){
         mutate(scale = as.character(scale))) 
     
     df$cutoffs = NA
+    df$all_cutoffs = NA
     
     return(df)}
   
