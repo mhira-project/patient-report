@@ -28,3 +28,5 @@ selectPatientInfo = c(
 disclaimer = "Disclaimer: The results of the instruments need to be
 interpreted by a mental health care professional (e.g., a psychologist)
 under consideration of other sources of information.
+The results have no validity if used without this expertise."
+
