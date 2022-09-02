@@ -33,6 +33,7 @@ source("utility_functions/patientInfoTable.R")
 inactivity = inactivity(timeoutSeconds)
 
 
+
 # LOAD TRANSLATION MATRIX -----------------------------------------------------
 
 transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
@@ -86,9 +87,15 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
 
 
           
-            uiOutput("tab")
+            uiOutput("tab"),
+            br(), 
+            br()
             
-        )
+        ),
+     
+      fluidRow(
+        style = "border: 1px solid black;",
+        p(disclaimer))
       
 
       
@@ -285,12 +292,12 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
      req(scalesFlt())
      print("Rendering elements...")
  
-      for (q in scalesFlt()$questionnaireShortName %>% unique){
+      for (q in scalesFlt()$questionnaireVersionId %>% unique){
         
         local({ #https://gist.github.com/wch/5436415/
             
           my_q = q 
-          s = scalesFlt() %>% filter(questionnaireShortName == my_q)
+          s = scalesFlt() %>% filter(questionnaireVersionId == my_q)
             
     # Create plot  
         print("... plot")  
@@ -330,20 +337,26 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
       
    # bring plot, interpret and score table together in div
            
-    output[[my_q]] <-  renderUI(
+       questName = scalesFlt() %>%
+         filter(questionnaireVersionId == q) %>%
+         '[['("questionnaireShortName") %>% unique()
+       
+
+     output[[my_q]] <-  renderUI(
                           div(
-                              h1(my_q),  
+                              h1(questName),  
+                              p(paste("version:",my_q)),
                               class= "box2",
                               h3(transMatrix["figure", lang()]),
                               if(!is_empty(plots)){plots},
                               br(),
                               hr(),
-                              h3(transMatrix["evaluation", lang()]),
-                              interpret,
+                              h3(transMatrix["data", lang()]),
+                              scores,
                               br(),
                               hr(),
-                              h3(transMatrix["data", lang()]),
-                              scores
+                              h3(transMatrix["evaluation", lang()]),
+                              interpret
                               )
                           )
         })
@@ -359,8 +372,13 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
       req(scalesFlt())
       print("rendering tabbox")
 
-      panels = lapply(scalesFlt()$questionnaireShortName %>% unique,
-                      function(q){tabPanel(title = q,
+      panels = lapply(scalesFlt()$questionnaireVersionId %>% unique,
+                      function(q){
+                        questName = scalesFlt() %>%
+                          filter(questionnaireVersionId == q) %>%
+                          '[['("questionnaireShortName") %>% unique()
+                        
+                        tabPanel(title = questName,
                                             uiOutput(q) # Output
                                                 )})
 
