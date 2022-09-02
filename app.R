@@ -351,12 +351,12 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
                               if(!is_empty(plots)){plots},
                               br(),
                               hr(),
-                              h3(transMatrix["data", lang()]),
-                              scores,
+                              h3(transMatrix["evaluation", lang()]),
+                              interpret,
                               br(),
                               hr(),
-                              h3(transMatrix["evaluation", lang()]),
-                              interpret
+                              h3(transMatrix["data", lang()]),
+                              scores
                               )
                           )
         })
