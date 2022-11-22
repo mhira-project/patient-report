@@ -9,6 +9,7 @@ library(jsonlite)
 library(DT)
 library(crosstalk)
 
+
 # APP SETTINGS ---------------------------------------------------------------- 
 
 if(!file.exists("settings.R")){
@@ -31,9 +32,7 @@ source("utility_functions/interpretTable.R")
 source("utility_functions/checkGraphqlResponse.R")
 source("utility_functions/patientInfoTable.R")
 
-
 inactivity = inactivity(timeoutSeconds)
-
 
 
 # LOAD TRANSLATION MATRIX -----------------------------------------------------
@@ -99,11 +98,8 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
         style = "border: 1px solid black;",
         p(disclaimer))
       
-
-      
       )
-      
-    
+
     
   # CLOSE USER INTERFACE UI ---------------------------------------------------
     
@@ -357,7 +353,7 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
                               interpret,
                               br(),
                               hr(),
-                              h3(transMatrix["data", lang()]),
+                              h3(transMatrix["scales", lang()]),
                               scores
                               )
                           )
