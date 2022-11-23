@@ -14,10 +14,11 @@ source("utility_functions/calculateScales.R")
 source("utility_functions/applyCutOffs.R")
 source("utility_functions/severityPlot.R")
 source("utility_functions/interpretTable.R")
+source("utility_functions/extract_cutoffs.R")
 
 #Setting
 patientId = 1 # patient_id can be found from the URL when clicking a report on the patient detail view in MHIRA
-token = getToken(Username = "yourUserName", Password = "yourPassword")
+token = getToken(Username = "yourUsername", Password = "yourPassword")
 
 response = getPatientReport(token = token, patientId = patientId, url = url)
 
@@ -27,10 +28,13 @@ data = simplifiedData
 questionnaireScripts = response$data$generatePatientReport$questionnaireScripts
 
 
-data = calculateScales(
+scales = calculateScales(
   simplifiedData = simplifiedData,
   questionnaireScripts = response$data$generatePatientReport$questionnaireScripts)
 
 
-scales = applyCutOffs(scales = data, questionnaireScripts = questionnaireScripts) 
+cutoffs = extract_cutoffs(questionnaireScripts = questionnaireScripts)
+
+
+applyCutOffs(scales = data, cutoffs = cutoffs) 
 

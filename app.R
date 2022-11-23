@@ -31,6 +31,7 @@ source("utility_functions/inactivity.R")
 source("utility_functions/interpretTable.R")
 source("utility_functions/checkGraphqlResponse.R")
 source("utility_functions/patientInfoTable.R")
+source("utility_functions/extract_cutoffs.R")
 
 inactivity = inactivity(timeoutSeconds)
 
@@ -202,6 +203,7 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
     
     data = reactiveVal() # the imported data as dataframe
     scales = reactiveVal() # calculated scales 
+    cutoffs = reactiveVal() # only cutoffs without data
     
     observe({
       req(!is_empty(response()))
@@ -224,16 +226,19 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
       
       questionnaireScripts = response$data$generatePatientReport$questionnaireScripts  
       
+      cutoffs = extract_cutoffs(questionnaireScripts = questionnaireScripts)
+      
       scales = calculateScales(
                   simplifiedData = data,
                   questionnaireScripts =  questionnaireScripts)
       
   
-      scales = applyCutOffs(scales = scales, questionnaireScripts =  questionnaireScripts)
+      scales = applyCutOffs(scales = scales, cutoffs = cutoffs) 
       
  
       data(data)
       scales(scales)
+      cutoffs(cutoffs)
       print("scales have been calculated and cutoffs applied")
   
             }) 
