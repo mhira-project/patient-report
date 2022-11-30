@@ -8,6 +8,7 @@ library(httr)
 library(jsonlite)
 library(DT)
 library(crosstalk)
+# library(plotly)
 
 
 # APP SETTINGS ---------------------------------------------------------------- 
@@ -32,6 +33,8 @@ source("utility_functions/interpretTable.R")
 source("utility_functions/checkGraphqlResponse.R")
 source("utility_functions/patientInfoTable.R")
 source("utility_functions/extract_cutoffs.R")
+source("utility_functions/groupCutoffs.R")
+source("utility_functions/severityPlotly.R")
 
 inactivity = inactivity(timeoutSeconds)
 
@@ -227,6 +230,7 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
       questionnaireScripts = response$data$generatePatientReport$questionnaireScripts  
       
       cutoffs = extract_cutoffs(questionnaireScripts = questionnaireScripts)
+      cutoffs = groupCutoffs(cutoffs = cutoffs)
       
       scales = calculateScales(
                   simplifiedData = data,
@@ -301,14 +305,12 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
             
           my_q = q 
           s = scalesFlt() %>% filter(questionnaireVersionId == my_q)
+          cuts = cutoffs() %>% filter(questionnaireVersionId == my_q)
             
     # Create plot  
         print("... plot")  
-           plots = renderPlot(
-              expr = severityPlot(scales = s, TimeOnXAxis = TimeOnXAxis),
-              height = "auto", 
-              width = 600
-            )
+           plots =  severityPlot(scales = s, cutoffs = cuts , TimeOnXAxis = TimeOnXAxis) 
+           
             
     # Create interpretation 
            print("... interpretation Table")
@@ -351,7 +353,8 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
                               p(paste("version:",my_q)),
                               class= "box2",
                               h3(transMatrix["figure", lang()]),
-                              if(!is_empty(plots)){plots},
+                              if(!is_empty(plots)){
+                              lapply(plots, function(p){p})}, 
                               br(),
                               hr(),
                               h3(transMatrix["evaluation", lang()]),

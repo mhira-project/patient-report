@@ -25,16 +25,30 @@ response = getPatientReport(token = token, patientId = patientId, url = url)
 simplifiedData = simplifyPatRep(response)
 data = simplifiedData
 
-questionnaireScripts = response$data$generatePatientReport$questionnaireScripts
-
-
-scales = calculateScales(
-  simplifiedData = simplifiedData,
-  questionnaireScripts = response$data$generatePatientReport$questionnaireScripts)
-
+questionnaireScripts = response$data$generatePatientReport$questionnaireScripts  
 
 cutoffs = extract_cutoffs(questionnaireScripts = questionnaireScripts)
 
+cutoffs = groupCutoffs(cutoffs = cutoffs)
 
-applyCutOffs(scales = data, cutoffs = cutoffs) 
+scales = calculateScales(
+  simplifiedData = data,
+  questionnaireScripts =  questionnaireScripts)
+
+
+
+
+scales = applyCutOffs(scales = scales, cutoffs = cutoffs) 
+
+cutoffs = cutoffs %>% filter(questionnaireVersionId == "62d7bb7f960d740024c5de7e")
+scales = scales %>% filter(questionnaireVersionId == "62d7bb7f960d740024c5de7e")
+
+
+
+
+
+
+
+
+
 
