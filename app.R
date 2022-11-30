@@ -14,7 +14,7 @@ library(crosstalk)
 # APP SETTINGS ---------------------------------------------------------------- 
 
 if(!file.exists("settings.R")){
-              file.copy(from = "settings-default.R", to = "settings.R")}
+              source("settings-default.R")}
 
 source("settings.R") # Please modify the settings file for changes to settings
 

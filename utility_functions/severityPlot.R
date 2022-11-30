@@ -1,4 +1,4 @@
-severityPlot = function(scales, cutoffs,  TimeOnXAxis = TRUE){
+severityPlot = function(scales, cutoffs, TimeOnXAxis = TRUE){
  
 
 
