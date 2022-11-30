@@ -34,7 +34,7 @@ source("utility_functions/checkGraphqlResponse.R")
 source("utility_functions/patientInfoTable.R")
 source("utility_functions/extract_cutoffs.R")
 source("utility_functions/groupCutoffs.R")
-source("utility_functions/severityPlotly.R")
+
 
 inactivity = inactivity(timeoutSeconds)
 
