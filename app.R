@@ -14,9 +14,8 @@ library(crosstalk)
 # APP SETTINGS ---------------------------------------------------------------- 
 
 if(!file.exists("settings.R")){
-              source("settings-default.R")}
-
-source("settings.R") # Please modify the settings file for changes to settings
+              source("settings-default.R")} else {
+              source("settings.R")} # Please create a settings.R file for permanent settings.
 
 # LOAD GRAPHQL ----------------------------------------------------------------
 
