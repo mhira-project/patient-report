@@ -332,8 +332,9 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
      
      sco$time = sub(" ", "<br/>",as.character(sco$time))
      
-     sco$assessment[duplicated(sco$assessment)] <- NA
      sco$time[duplicated(sco$time)] <- NA
+     sco$assessment[is.na(sco$time)] <- NA
+     
            
      colnames(sco) <- transMatrix[c("time","assessment","scale", "score", "level", "cutoffs"), lang()] 
               
