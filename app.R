@@ -15,7 +15,7 @@ library(crosstalk)
 
 if(!file.exists("settings.R")){
               source("settings-default.R")} else {
-              source("settings.R")} # Please create a settings.R file for permanent settings.
+              source("settings.R")} # To customise settings, please create settings.R
 
 # LOAD GRAPHQL ----------------------------------------------------------------
 
