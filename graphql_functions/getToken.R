@@ -1,8 +1,7 @@
-getToken = function(Username, Password){
+getToken = function(Username, Password, url){
 
 source("graphql_functions/GQL2.R")
 source("graphql_functions/generateAuthQuery.R")
-source("settings.R")
 #Username <- readline(prompt = "Enter MHIRA username: ")
 #Password <- readline(prompt = "Enter MHIRA password: ")
 
@@ -17,3 +16,4 @@ token = res_auth$data$login$accessToken
 return(token)
 
 }
+

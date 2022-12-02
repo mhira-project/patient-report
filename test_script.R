@@ -15,9 +15,21 @@ source("utility_functions/applyCutOffs.R")
 source("utility_functions/severityPlot.R")
 source("utility_functions/interpretTable.R")
 source("utility_functions/extract_cutoffs.R")
+source("utility_functions/groupCutoffs.R")
 
 #Setting
+
+# APP SETTINGS ---------------------------------------------------------------- 
+
+if(!file.exists("settings.R")){
+  source("settings-default.R")} else {
+    source("settings.R")} # To customise settings, please create settings.R
+
 patientId = 1 # patient_id can be found from the URL when clicking a report on the patient detail view in MHIRA
+
+# LOAD DATA -------------------------------------------------------------------
+
+
 token = getToken(Username = "yourUsername", Password = "yourPassword")
 
 response = getPatientReport(token = token, patientId = patientId, url = url)
