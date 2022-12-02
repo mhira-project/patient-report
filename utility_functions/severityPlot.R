@@ -103,8 +103,7 @@ severityPlot = function(scales, cutoffs, TimeOnXAxis = TRUE){
   #     facet_wrap(. ~ plotGroup, scales = "free")}
   
   
- p %>% renderPlot(height = "auto", 
-                  width = 800)
+ p 
  
   })
   

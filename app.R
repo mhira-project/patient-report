@@ -354,7 +354,8 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
                               class= "box2",
                               h3(transMatrix["figure", lang()]),
                               if(!is_empty(plots)){
-                              lapply(plots, function(p){p})}, 
+                              lapply(plots,
+                                     function(p){p %>% renderPlot(height = "auto", width = 800)})}, 
                               br(),
                               hr(),
                               h3(transMatrix["evaluation", lang()]),
