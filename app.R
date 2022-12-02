@@ -215,11 +215,11 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
      
       # Simplify data and remove incomplete questionnaires
       
-      data = simplifyPatRep(response = response)  
+      data = simplifyPatRep(response = response)    
       
       # Terminate session if no completed data
       
-      if(is_empty(data)){
+      if(is_empty(data) | nrow(data) < 1){
         showNotification(
           transMatrix["noQuestionnaire", lang()],
           type = "error",
