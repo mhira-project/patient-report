@@ -21,6 +21,7 @@ GQL = 'query {
         type
         required
         questionGrouplabel
+        label
         choices{
           label
           name
