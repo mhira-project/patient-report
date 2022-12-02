@@ -16,6 +16,8 @@ simplifyPatRep = function(response){
     unnest(cols = "answer") %>%
     left_join(unnest(data$generatePatientReport$assessments, cols = "assessmentType"), by = "assessmentId") 
   
+  if(!"createdAt" %in% colnames(df)){return(NULL)}
+  
   colnames(df)[colnames(df) == "name.x"] <- "questionnaireShortName"
   colnames(df)[colnames(df) == "name.y"] <- "assessmentName"
   colnames(df)[colnames(df) == "status"] <- "assessmentStatus"
