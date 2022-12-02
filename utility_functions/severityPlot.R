@@ -109,7 +109,8 @@ severityPlot = function(scales, cutoffs, TimeOnXAxis = TRUE){
   
   }
   
-  
+  myplots = myplots %>% compact()
+
   return(myplots)
   
 } 

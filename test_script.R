@@ -30,7 +30,7 @@ patientId = 1 # patient_id can be found from the URL when clicking a report on t
 # LOAD DATA -------------------------------------------------------------------
 
 
-token = getToken(Username = "yourUsername", Password = "yourPassword")
+token = getToken(Username = "yourUsername", Password = "yourPassword", url = url)
 
 response = getPatientReport(token = token, patientId = patientId, url = url)
 
