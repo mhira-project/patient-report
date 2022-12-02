@@ -33,6 +33,7 @@ source("utility_functions/checkGraphqlResponse.R")
 source("utility_functions/patientInfoTable.R")
 source("utility_functions/extract_cutoffs.R")
 source("utility_functions/groupCutoffs.R")
+source("utility_functions/printItemTable.R")
 
 
 inactivity = inactivity(timeoutSeconds)
@@ -54,6 +55,7 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
                      'MHIRA')
     ),
     
+
     # SIDEBAR ------------------------------------------------------------------
     dashboardSidebar(
       width = 250,
@@ -70,7 +72,6 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
          )),
       
      br(),
-     
      
      uiOutput("selectAss")
    
@@ -335,14 +336,17 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
      sco$time[duplicated(sco$time)] <- NA
      sco$assessment[is.na(sco$time)] <- NA
      
-           
      colnames(sco) <- transMatrix[c("time","assessment","scale", "score", "level", "cutoffs"), lang()] 
               
      scores =   sco %>%  renderDT(options = list(pageLength = 100), escape = FALSE) 
+     
+   # printItemTable
+     
+     itemTable = printItemTable(data =  data(), questVersionId = my_q)
       
-   # bring plot, interpret and score table together in div
+   # Make panel with plot, interpret and score table 
            
-       questName = scalesFlt() %>%
+      questName = scalesFlt() %>%
          filter(questionnaireVersionId == q) %>%
          '[['("questionnaireShortName") %>% unique()
        
@@ -363,7 +367,9 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
                               br(),
                               hr(),
                               h3(transMatrix["scales", lang()]),
-                              scores
+                              scores,
+                              h3(transMatrix["items", lang()]),
+                              itemTable 
                               )
                           )
         })

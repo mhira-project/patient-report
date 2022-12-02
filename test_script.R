@@ -47,20 +47,19 @@ scales = calculateScales(
   simplifiedData = data,
   questionnaireScripts =  questionnaireScripts)
 
-
-
-
 scales = applyCutOffs(scales = scales, cutoffs = cutoffs) 
 
-cutoffs = cutoffs %>% filter(questionnaireVersionId == "62d7bb7f960d740024c5de7e")
-scales = scales %>% filter(questionnaireVersionId == "62d7bb7f960d740024c5de7e")
 
+# Plot
 
+cutoffs_single = cutoffs %>% filter(questionnaireVersionId == "62d7bb7f960d740024c5de7e")
+scales_single = scales %>% filter(questionnaireVersionId == "62d7bb7f960d740024c5de7e")
 
+plots = severityPlot(scales_single, cutoffs_single)
 
+lapply(plots[2], function(p){p})
 
+# Single items
 
-
-
-
-
+questionnaireVersionId = "62d7bb7f960d740024c5de7e"
+printItemTable(data, questVersionId = "62d7bb7f960d740024c5de7e")
