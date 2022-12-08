@@ -1,5 +1,6 @@
 groupCutoffs = function(cutoffs){
   
+
   
   g = function(scale, low_cut, high_cut, level){
     
@@ -37,12 +38,18 @@ groupCutoffs = function(cutoffs){
   
   
   
- cutoffs =  cutoffs %>%
-    group_by(questionnaireVersionId) %>%
-    mutate(group =   g(scale, low_cut, high_cut, level))
+
+  
+  
+ if(cutoffs %>% nrow < 1){
+   cutoffs$group <- numeric(0)
+   } else {
+        cutoffs =  cutoffs %>%
+            group_by(questionnaireVersionId) %>%
+            mutate(group =   g(scale, low_cut, high_cut, level))
+          }
   
   
  return(cutoffs)
- 
+}
   
-} 

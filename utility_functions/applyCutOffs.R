@@ -1,8 +1,10 @@
 applyCutOffs = function(scales, cutoffs){
   print("applyCutOffs")
   
+ if(cutoffs %>% nrow() < 1) {cutoffs = cutoffs %>% add_row()}
+  
   df = scales %>% 
-    full_join(cutoffs, by = c("questionnaireVersionId" = "questionnaireVersionId", "scale" = "scale")) 
+    left_join(cutoffs, by = c("questionnaireVersionId" = "questionnaireVersionId", "scale" = "scale")) 
   
   df1 = df %>% 
     group_by(questionnaireId, scale, assessmentDateTime) %>%          

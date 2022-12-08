@@ -7,6 +7,9 @@ severityPlot = function(scales, cutoffs, TimeOnXAxis = TRUE){
 
   myplots = vector('list', scales$group %>% unique() %>% length())
   
+  scales = scales %>% mutate(group = ifelse(is.na(group), scale %>% factor() %>% as.numeric(), group ))
+  
+  
   for (g in scales$group %>% unique){
     
     message(g)
@@ -110,7 +113,7 @@ severityPlot = function(scales, cutoffs, TimeOnXAxis = TRUE){
   }
   
   myplots = myplots %>% compact()
-
+  
   return(myplots)
   
 } 
