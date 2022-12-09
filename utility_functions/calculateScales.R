@@ -57,19 +57,23 @@ d = data.frame() # Empty data frame to collect the result
       
      for (s in 1:nrow(scr)){
       
-     ex =   lapply(X = all.vars(parse(text = scr$Formula[s])),  FUN = exists, dfItems) %>% unlist
+       ex =  lapply(X = all.vars(parse(text = scr$Formula[s])),
+                    FUN = exists,
+                    dfItems) %>%
+                    unlist
        
        if(!all(ex)){
          showNotification(
            ui = paste("In the questionnaire with the version",
                       simplifiedData$questionnaireVersionId[simplifiedData$questionnaireId == i] %>%
                       unique(),
-                      "the variables in scales_table do not match"),
+                      ": some of the variables used in scales_table do not exist in the questionnaire. 
+                      The corresponding scales are omitted in the report."),
             duration = 20,
             closeButton = T
             )
            next
-       }
+                  }
        
        scales[s,"value"] <- eval(parse(text = scr$Formula[s]), envir = dfItems)
       
