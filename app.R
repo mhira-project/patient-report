@@ -219,7 +219,15 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
       
       # Terminate session if no completed data
       
-      if(is_empty(data) | nrow(data) < 1){
+      dataNotOkay = FALSE
+      
+      if(is_empty(data)){
+        dataNotOkay = TRUE
+      } else {
+       if(data %>% nrow < 1){dataNotOkay = TRUE}
+      } 
+      
+      if(dataNotOkay){
         showNotification(
           transMatrix["noQuestionnaire", lang()],
           type = "error",
@@ -227,6 +235,8 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
         session$close()
         }
       
+      # Extract data from scripts      
+     
       questionnaireScripts = response$data$generatePatientReport$questionnaireScripts  
       
       cutoffs = extract_cutoffs(questionnaireScripts = questionnaireScripts)
