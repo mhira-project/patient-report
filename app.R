@@ -10,7 +10,6 @@ library(DT)
 library(crosstalk)
 # library(plotly)
 
-
 # APP SETTINGS ---------------------------------------------------------------- 
 
 if(!file.exists("settings.R")){
@@ -143,7 +142,7 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
       } 
     }) 
     
-    
+  
   # STORE LOCAL STORAGE EXTRACTED TOKEN TO SHINY SESSION OBJECT ----------------
     observe({ 
       print("writing token to session object")
@@ -320,12 +319,12 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
     # Create plot  
         print("... plot")  
            plots =  severityPlot(scales = s, cutoffs = cuts , TimeOnXAxis = TimeOnXAxis) 
-           
+            
             
     # Create interpretation 
-           print("... interpretation Table")
+        print("... interpretation Table")
             
-      interpret =   s %>% interpretTable(showScale = showScale, transMatrix =  transMatrix, lang = lang())
+        interpret = s %>% interpretTable(transMatrix =  transMatrix, lang = lang(), render = T)
      
      
      # create score table 
