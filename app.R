@@ -8,7 +8,7 @@ library(httr)
 library(jsonlite)
 library(DT)
 library(crosstalk)
-# library(plotly)
+
 
 # APP SETTINGS ---------------------------------------------------------------- 
 
