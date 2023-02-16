@@ -34,9 +34,7 @@ source("utility_functions/extract_cutoffs.R")
 source("utility_functions/groupCutoffs.R")
 source("utility_functions/printItemTable.R")
 
-
 inactivity = inactivity(timeoutSeconds)
-
 
 # LOAD TRANSLATION MATRIX -----------------------------------------------------
 
@@ -366,7 +364,7 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
                               p(paste("version:",my_q)),
                               class= "box2",
                               h3(transMatrix["figure", lang()]),
-                              if(!is_empty(plots)){
+                              if (!is_empty(plots)) {
                               lapply(plots,
                                      function(p){p %>% renderPlot(height = "auto", width = 800)})}, 
                               br(),
@@ -377,8 +375,10 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
                               hr(),
                               h3(transMatrix["scales", lang()]),
                               scores,
-                              h3(transMatrix["items", lang()]),
-                              itemTable 
+                              br(),
+                              hr(),
+                              if (showItems) {h3(transMatrix["items", lang()])},
+                              if (showItems) {itemTable} 
                               )
                           )
         })
@@ -387,7 +387,6 @@ transMatrix = data.frame(fread("www/transMatrix.csv"), row.names = "Key")
    }) %>% bindEvent(scalesFlt())
     
   
-    
   # CREATE TABS ---------------------------------------------------------------
 
     output$tab <- renderUI({
