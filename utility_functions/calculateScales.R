@@ -5,15 +5,19 @@ calculateScales = function(simplifiedData, questionnaireScripts) {
   qS = questionnaireScripts %>%
     filter(name == "scales_table" | name == "scales_function")
   
-  if(is_empty(qS)){
+QuestionnairesHaveScript =  unique(simplifiedData$questionnaireVersionId) %in% unique(qS$questionnaireId) 
+noMatchingScripts =   (!QuestionnairesHaveScript) %>% all()
+ 
+
+ if(is_empty(qS) | noMatchingScripts){
     showNotification(
-      "No scale_script or scales_table found.
+      "No scale_script or scales_table found for the collected data.
       You need to add these evaluation routines to your questionnaires",
       type = "error",
       duration = 20)
     session$close()}
   
-  
+
 d = data.frame() # Empty data frame to collect the result
 
   
