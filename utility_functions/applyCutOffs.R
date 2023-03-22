@@ -8,7 +8,7 @@ applyCutOffs = function(scales, cutoffs){
   
   df1 = df %>% 
     group_by(questionnaireId, scale, assessmentDateTime) %>%          
-    mutate(all_cutoffs = paste0("[", level, ": >=", low_cut, " & <", high_cut, "]")) %>%
+    mutate(all_cutoffs = paste0("[", level, ": \u2265", low_cut, " & <", high_cut, "]")) %>%
     summarise(all_cutoffs = ifelse(is.na(level), NA, paste(all_cutoffs, collapse = "<br/>"))) %>%
     unique %>%
     ungroup
