@@ -38,7 +38,7 @@ severityPlot = function(scales, cutoffs, TimeOnXAxis = TRUE){
     
     
     p = p +   
-      geom_segment(data = s, aes(x=scale, xend=scale, y=0, yend=value)) + 
+      geom_segment(data = s, aes(x=scale, xend=scale, y=scaleMin, yend=value)) + 
       geom_point(data = s, aes(x=scale, y=value),size=5, color="darkblue", fill=alpha("white", 0.3), alpha=0.7, shape=21, stroke=2) +
       ggtitle(paste(s$assessmentDateTime, s$assessmentName, sep = " - ")) 
     
@@ -99,12 +99,8 @@ severityPlot = function(scales, cutoffs, TimeOnXAxis = TRUE){
     scale_colour_brewer(type = "div", palette = "Dark2", direction = 1) +
     scale_fill_brewer(type = "seq", palette = "Reds", direction = 1) +
     ylab("value") +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) 
-  
-  # if(length(s$plotGroup %>% na.omit %>% unique) > 1){
-  #   p = p +
-  #     facet_wrap(. ~ plotGroup, scales = "free")}
-  
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    ylim(c(min(s$scaleMin), max(s$scaleMax)))
   
  p 
  
