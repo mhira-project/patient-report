@@ -1,4 +1,10 @@
-
+.description-box {
+  /*border: 1px solid #ccc;*/
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #ffffff;
+  width: 800px;
+}
 
 .select {margin: 0px 0px 0px 10px;
      /*border-style: ridge;

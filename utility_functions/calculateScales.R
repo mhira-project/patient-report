@@ -5,6 +5,12 @@ calculateScales = function(simplifiedData, questionnaireScripts) {
   qS = questionnaireScripts %>%
     filter(name == "scales_table" | name == "scales_function")
   
+  
+  # Make sure the questionnaire is completed
+  
+  simplifiedData = simplifiedData %>% filter(assessmentStatus == "COMPLETED")
+  
+  # Make sure questionnaires have scripts
   QuestionnairesHaveScript =  unique(simplifiedData$questionnaireVersionId) %in% unique(qS$questionnaireId) 
   noMatchingScripts =   (!QuestionnairesHaveScript) %>% all()
   
@@ -17,8 +23,9 @@ calculateScales = function(simplifiedData, questionnaireScripts) {
       duration = 20)
     session$close()}
   
+  # Empty data frame to collect the result
   
-  d = data.frame() # Empty data frame to collect the result
+  d = data.frame() 
   
   
   for (i in unique(simplifiedData$questionnaireId)){
@@ -33,7 +40,20 @@ calculateScales = function(simplifiedData, questionnaireScripts) {
     dfScr = qS %>%
       filter(questionnaireId == df$questionnaireVersionId %>% unique)  
     
-    if(nrow(dfScr) == 0){next}
+    if(nrow(dfScr) == 0){
+      showNotification(
+        paste("No scales_table or scale_script for",
+              df$questionnaireShortName %>% unique,
+              "in language",
+              df$language %>% unique,
+              "and verion ID",
+              df$questionnaireVersionId,
+              "-> Questionaire is omitted.",
+              sep = " ") %>% unique(), 
+        type = "warning",
+        duration = 20)
+      next}
+    
     if(nrow(dfScr) != 1){
       showNotification(
         paste("More than one scale evaluation routine (scales_table or scales_script) for",
@@ -43,7 +63,7 @@ calculateScales = function(simplifiedData, questionnaireScripts) {
               sep = " "), 
         type = "error",
         duration = 20)
-      session$close()}
+      next}
     
     # Prepare questionnaire data for application of script
     
@@ -121,7 +141,7 @@ calculateScales = function(simplifiedData, questionnaireScripts) {
     
     
     x = df %>% select(assessmentId, assessmentName, questionnaireId,questionnaireVersionId,
-                      questionnaireShortName, questionnaireFullName,
+                      questionnaireShortName, questionnaireFullName, description,
                       language, assessmentDateTime =  updatedAt) %>%
       drop_na(assessmentDateTime) %>%
       slice_tail() %>%
@@ -131,6 +151,13 @@ calculateScales = function(simplifiedData, questionnaireScripts) {
     
     
   } 
+  
+  if(is_empty(d)){
+    showNotification(
+      "No scales were calculated",
+      type = "error",
+      duration = 20)
+    session$close()}
   
   d$assessmentDate = as.Date(d$assessmentDateTime)
   d$assessmentName = factor(d$assessmentName, levels = d[order(d$assessmentDateTime, decreasing = F),c("assessmentName")] %>% unique)

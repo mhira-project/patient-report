@@ -1,7 +1,7 @@
 applyCutOffs = function(scales, cutoffs){
   print("applyCutOffs")
   
- if(cutoffs %>% nrow() < 1) {cutoffs = cutoffs %>% add_row()}
+  if(cutoffs %>% nrow() < 1) {cutoffs = cutoffs %>% add_row()}
   
   df = scales %>% 
     left_join(cutoffs, by = c("questionnaireVersionId" = "questionnaireVersionId", "scale" = "scale")) 
@@ -9,7 +9,7 @@ applyCutOffs = function(scales, cutoffs){
   df1 = df %>% 
     group_by(questionnaireId, scale, assessmentDateTime) %>%          
     mutate(all_cutoffs = paste0("[", level, ": \u2265", low_cut, " & <", high_cut, "]")) %>%
-    summarise(all_cutoffs = ifelse(is.na(level), NA, paste(all_cutoffs, collapse = "<br/>"))) %>%
+    reframe(all_cutoffs = ifelse(is.na(level), NA, paste(all_cutoffs, collapse = "<br/>"))) %>%
     unique %>%
     ungroup
   

@@ -1,6 +1,6 @@
 generatePatientReportQuery = function(patientId){
-
-GQL = 'query {
+  
+  GQL = 'query {
   generatePatientReport (id: patientId){							# Please use UUID - can be additional field in database. 
      patient{
       medicalRecordNo
@@ -16,6 +16,7 @@ GQL = 'query {
       name
       questionnaireFullName  
       language
+      description
       questions{
         variable
         type
@@ -55,10 +56,10 @@ GQL = 'query {
     }
   }
 }'
-
-
-GQL = sub("patientId", patientId, GQL)   
-
-return(GQL)  
+  
+  
+  GQL = sub("patientId", patientId, GQL)   
+  
+  return(GQL)  
   
 }
