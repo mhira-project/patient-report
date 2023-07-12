@@ -24,10 +24,7 @@ applyCutOffs = function(scales, cutoffs){
     select(- max_scale) %>% 
     ungroup
   
- if(is.numeric(result$text_order) & !any(is.na(result$text_order))){
-  result$scale = factor(result$scale, levels =  result$scale[order(result$text_order)])
- }
-  
+
   return(result)
   
 }
