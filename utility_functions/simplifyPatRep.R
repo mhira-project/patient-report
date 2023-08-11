@@ -63,6 +63,9 @@ simplifyPatRep = function(response){
   
  df = df %>% mutate(questionnaireShortName = coalesce(questionnaireShortName,questionnaireFullName) # in case short name is missing
                     )
+  
+ df$textValue[is.na(df$textValue)] = df$numberValue[is.na(df$textValue)]
+
   # Return simplfied dataframe
  
  return(df)
