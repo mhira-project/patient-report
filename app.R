@@ -267,7 +267,7 @@ server = function(input, output, session) {
     checkboxGroupInput(inputId = "selectedAss",
                        label = "",
                        choices = choice,
-                       selected = choice) %>%
+                       selected = choice[1]) %>%
       menuItem( 
         text = transMatrix["selectAssessment", lang()],
         icon = icon("clipboard"),
